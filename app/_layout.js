@@ -1,11 +1,15 @@
 import { Slot, Redirect, useSegments, usePathname } from "expo-router";
 import { Provider, useSelector } from "react-redux";
-import { store, persistor } from "@store/store";
+import { store, persistor } from "@/store/store";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { PersistGate } from "redux-persist/integration/react";
-import { Platform, View, StyleSheet } from "react-native";
-import Loading from "@components/Loading";
+import { Dimensions, Platform, StyleSheet, View } from "react-native";
+import Loading from "@/components/Loading";
 import { useEffect, useState, useRef } from "react";
+
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import "@/global.css";
+import { Text } from "@/components/ui/text";
 
 function RootNavigator() {
   const { token } = useSelector((state) => state.auth);
@@ -13,9 +17,18 @@ function RootNavigator() {
   const inAuthGroup = segments[0] === "(auth)";
   const isNotFound = segments[0] === "+not-found";
 
+  // --- KHUSUS WEB: redirect root "/" ke login ---
+  if (Platform.OS === "web" && window.location.pathname === "/") {
+    return <Redirect href="/login" />;
+  }
+
   // Jika halaman not-found
   if (isNotFound) {
-    return <Slot />;
+    return (
+      <GluestackUIProvider mode="light">
+        <Slot />
+      </GluestackUIProvider>
+    );
   }
 
   // Belum login, tapi bukan di (auth) → ke login
@@ -28,9 +41,12 @@ function RootNavigator() {
     return <Redirect href="/home" />;
   }
 
-  return <Slot />;
+  return (
+    <GluestackUIProvider mode="light">
+      <Slot />
+    </GluestackUIProvider>
+  );
 }
-
 
 /**
  * WithRouteLoading - overlay approach
@@ -42,18 +58,14 @@ function WithRouteLoading({ delayMs = 500 }) {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    // jalankan hanya ketika path berubah
     if (prevPath.current !== pathname) {
-      // clear timer sebelumnya (safety)
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
       }
 
-      // mulai busy
       setBusy(true);
 
-      // hentikan busy setelah delayMs
       timerRef.current = setTimeout(() => {
         setBusy(false);
         timerRef.current = null;
@@ -61,7 +73,7 @@ function WithRouteLoading({ delayMs = 500 }) {
 
       prevPath.current = pathname;
     }
-    // cleanup jika component unmount
+
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -73,7 +85,7 @@ function WithRouteLoading({ delayMs = 500 }) {
   return (
     <>
       <RootNavigator />
-      {/* gunakan ini untuk menampilkan loading overlay */}
+      {/* Gunakan ini untuk mengaktifkan loading overlay */}
       {/* {busy && (
         <View style={styles.overlay} pointerEvents="auto">
           <Loading />
@@ -88,16 +100,50 @@ export default function RootLayout() {
     <Provider store={store}>
       <PersistGate loading={<Loading />} persistor={persistor}>
         <SafeAreaProvider>
-          <SafeAreaView
-            style={{ flex: 1, backgroundColor: "#fff" }}
-            edges={Platform.OS === "android" ? ["bottom"] : []}
-          >
-            <WithRouteLoading delayMs={500} />
-          </SafeAreaView>
+          <MobileOnlyWrapper>
+            <SafeAreaView
+              style={{ flex: 1, backgroundColor: "#fff" }}
+              edges={Platform.OS === "android" ? ["bottom"] : []}
+            >
+              <WithRouteLoading delayMs={500} />
+            </SafeAreaView>
+          </MobileOnlyWrapper>
         </SafeAreaProvider>
       </PersistGate>
     </Provider>
   );
+}
+
+function MobileOnlyWrapper({ children }) {
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    if (Platform.OS !== "web") return; // hanya jalan di web
+
+    function handleResize() {
+      const { width } = Dimensions.get("window");
+      setIsMobile(width <= 600);
+    }
+
+    handleResize(); // check saat mount
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (Platform.OS === "web" && !isMobile) {
+    return (
+      <View style={styles.overlay}>
+        <Text style={styles.text}>
+          Please use a mobile device or resize your window to portrait mode
+        </Text>
+      </View>
+    );
+  }
+
+  return children;
 }
 
 const styles = StyleSheet.create({
@@ -108,5 +154,10 @@ const styles = StyleSheet.create({
     elevation: 9999,
     justifyContent: "center",
     alignItems: "center",
+  },
+  text: {
+    color: "#000",
+    fontSize: 18,
+    textAlign: "center",
   },
 });

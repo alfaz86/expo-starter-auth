@@ -1,23 +1,31 @@
 import React from "react";
-import {
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  Text,
-  Platform,
-} from "react-native";
+import { Dimensions, View } from "react-native";
 import { useDispatch } from "react-redux";
-import { login } from "@store/authSlice";
+import { login } from "@/store/authSlice";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+} from "@/components/ui/form-control";
+import { Input, InputField } from "@/components/ui/input";
+import { Button, ButtonText } from "@/components/ui/button";
+import { Feather } from "@expo/vector-icons";
+import { Link, LinkText } from "@/components/ui/link";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
+
 export default function Login() {
   const dispatch = useDispatch();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { height } = Dimensions.get("window");
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -39,95 +47,103 @@ export default function Login() {
   return (
     <View
       style={{
-        ...styles.container,
-        marginBottom: Platform.OS === "android" ? -insets.bottom : 0,
+        flex: 1,
+        justifyContent: "flex-start",
+        marginBottom: insets.bottom ? -insets.bottom : 0,
+        padding: 20,
+        paddingTop: height * 0.3,
+        backgroundColor: "#fff",
       }}
     >
-      <View style={styles.card}>
-        <Formik
-          initialValues={{ email: "admin@example.com", password: "password" }}
-          validationSchema={validationSchema}
-          onSubmit={handleLogin}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            isSubmitting,
-          }) => (
-            <>
-              <TextInput
-                placeholder="Email"
-                value={values.email}
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                style={styles.input}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
-              {errors.email && touched.email && (
-                <Text style={styles.error}>{errors.email}</Text>
-              )}
-
-              <TextInput
-                placeholder="Password"
-                value={values.password}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                secureTextEntry
-                style={styles.input}
-              />
-              {errors.password && touched.password && (
-                <Text style={styles.error}>{errors.password}</Text>
-              )}
-
-              <View style={{ gap: 10 }} >
-                <Button
-                  title={isSubmitting ? "Logging in..." : "Login"}
-                  onPress={handleSubmit}
-                  disabled={isSubmitting}
+      <Heading size="2xl" style={{ alignSelf: "center" }}>Login</Heading>
+      <Formik
+        initialValues={{ email: "admin@example.com", password: "password" }}
+        validationSchema={validationSchema}
+        onSubmit={handleLogin}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isSubmitting,
+        }) => (
+          <>
+            {/* Email */}
+            <FormControl isInvalid={touched.email && !!errors.email} className="mb-3">
+              <FormControlLabel>
+                <FormControlLabelText>Email</FormControlLabelText>
+              </FormControlLabel>
+              <Input>
+                <InputField
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  placeholder="Masukkan email"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                 />
+              </Input>
+              {touched.email && errors.email && (
+                <FormControlError>
+                  <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
+                  <FormControlErrorText className="text-red-500">
+                    {errors.email}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+            </FormControl>
 
-                <Text
-                  style={styles.link}
-                  onPress={() => router.push("/register")}
-                >
-                  Register
-                </Text>
-              </View>
-            </>
-          )}
-        </Formik>
-      </View>
+            {/* Password */}
+            <FormControl
+              isInvalid={touched.password && !!errors.password}
+              className="mb-3"
+            >
+              <FormControlLabel>
+                <FormControlLabelText>Password</FormControlLabelText>
+              </FormControlLabel>
+              <Input>
+                <InputField
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  placeholder="Masukkan password"
+                  secureTextEntry
+                />
+              </Input>
+              {touched.password && errors.password && (
+                <FormControlError>
+                  <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
+                  <FormControlErrorText className="text-red-500">
+                    {errors.password}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+            </FormControl>
+
+            {/* Button */}
+            <Button
+              className="mt-3"
+              onPress={handleSubmit}
+              isDisabled={isSubmitting}
+            >
+              <ButtonText>
+                {isSubmitting ? "Logging in..." : "Login"}
+              </ButtonText>
+            </Button>
+
+            {/* Link Register */}
+            <View style={{ marginTop: 20, alignItems: 'center' }}>
+              <Text>Don't have an account?</Text>
+              <Link onPress={() => router.push("/register")}>
+                <LinkText>Register</LinkText>
+              </Link>
+            </View>
+          </>
+        )}
+      </Formik>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  card: {
-    padding: 20,
-    backgroundColor: "#fff",
-  },
-  input: {
-    borderWidth: 1,
-    marginBottom: 10,
-    padding: 8,
-    borderRadius: 5,
-  },
-  error: {
-    color: "red",
-    marginBottom: 8,
-  },
-  link: {
-    color: "blue",
-    marginTop: 10,
-    textAlign: "center",
-  },
-});

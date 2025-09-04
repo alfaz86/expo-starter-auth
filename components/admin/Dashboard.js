@@ -1,4 +1,4 @@
-import Loading from "@components/Loading";
+import Loading from "@/components/Loading";
 import { TouchableOpacity, View, Text, StyleSheet, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";

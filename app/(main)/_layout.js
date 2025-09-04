@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { Platform, View } from 'react-native';
+import { Platform } from 'react-native';
 
 export default function MainLayout() {
   return (
@@ -22,7 +22,6 @@ export default function MainLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          headerBackTitle: 'Back',
         }}
       />
     </Stack>

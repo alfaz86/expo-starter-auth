@@ -1,11 +1,20 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
-import { Text, Image, TouchableOpacity, Platform, Pressable } from 'react-native';
+import { Image, TouchableOpacity, Platform, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Heading } from '@/components/ui/heading';
 
 function BrandHeader() {
-  return <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Expo Template</Text>;
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <Image
+        source={require("@/assets/favicon.png")}
+        style={{ width: 32, height: 32, marginRight: 8 }}
+      />
+      <Heading>Expo Template</Heading>
+    </View>
+  );
 }
 
 function AvatarHeader() {
@@ -31,7 +40,9 @@ export default function TabsLayout() {
       screenOptions={{
         tabBarStyle: {
           marginBottom: Platform.OS === 'android' ? -insets.bottom : 0,
+          ...(Platform.OS === 'web' && { height: 56 }),
         },
+        tabBarActiveTintColor: '#171717',
       }}
     >
       <Tabs.Screen
@@ -49,7 +60,7 @@ export default function TabsLayout() {
         name='notifications'
         options={{
           tabBarLabel: 'Notifications',
-          headerTitle: 'Notifications',
+          headerTitle: () => <Heading>Notifications</Heading>,
           tabBarIcon: ({ color, size }) => (
             <Feather name='bell' size={size} color={color} />
           ),
@@ -59,7 +70,7 @@ export default function TabsLayout() {
         name='settings'
         options={{
           tabBarLabel: 'Settings',
-          headerTitle: 'Settings',
+          headerTitle: () => <Heading>Settings</Heading>,
           tabBarIcon: ({ color, size }) => (
             <Feather name='settings' size={size} color={color} />
           ),
