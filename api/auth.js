@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const BASE_API_URL = "http://192.168.1.7:3210/api";
+export const BASE_API_URL = process.env.EXPO_PUBLIC_API_URL
+  ? process.env.EXPO_PUBLIC_API_URL
+  : null;
 
 const dummyLoginApiResponse = {
   data: {
