@@ -25,6 +25,6 @@ export const loginApi = async ({ email, password }) => {
   if (BASE_API_URL === null) {
     return dummyLoginApiResponse;
   }
-  const res = await axios.post(`${BASE_API_URL}/auth/login`, { email, password });
+  const res = await axios.post(`${BASE_API_URL}/api/auth/login`, { email, password });
   return res.data;
 };

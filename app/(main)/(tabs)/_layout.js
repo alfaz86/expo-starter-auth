@@ -1,48 +1,54 @@
 import { Feather } from '@expo/vector-icons';
-import { Tabs, useRouter } from 'expo-router';
-import { Image, TouchableOpacity, Platform, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { Tabs } from 'expo-router';
+import { Platform, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading } from '@/components/ui/heading';
-
-function BrandHeader() {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Image
-        source={require("@/assets/favicon.png")}
-        style={{ width: 32, height: 32, marginRight: 8 }}
-      />
-      <Heading>Expo Template</Heading>
-    </View>
-  );
-}
-
-function AvatarHeader() {
-  const { user } = useSelector((state) => state.auth);
-  const router = useRouter();
-  const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name)}&background=random&color=fff&size=200`;
-
-  return (
-    <TouchableOpacity onPress={() => router.push('/profile')}>
-      <Image
-        source={{ uri: avatarUrl }}
-        style={{ width: 32, height: 32, borderRadius: 16, marginRight: 12 }}
-      />
-    </TouchableOpacity>
-  );
-}
+import { Button, ButtonText } from '@/components/ui/button';
+import { openClearAllModal } from '@/store/modalSlice';
+import { useActiveTheme } from '@/hooks/useActiveTheme';
+import { colors } from '@/theme/colors';
+import AnimatedBadge from '@/components/tabs/AnimatedBadge';
+import BrandHeader from '@/components/tabs/BrandHeader';
+import AvatarHeader from '@/components/tabs/AvatarHeader';
 
 export default function TabsLayout() {
+  const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
+  const notifications = useSelector(state => state.notifications.list);
+  const unreadCount = notifications.filter(n => !n.read).length;
+  const activeTheme = useActiveTheme();
+
+  const handleClearAll = () => {
+    if (notifications.length > 0) {
+      dispatch(openClearAllModal());
+    }
+  };
 
   return (
     <Tabs
       screenOptions={{
+        lazy: true,
         tabBarStyle: {
           marginBottom: Platform.OS === 'android' ? -insets.bottom : 0,
           ...(Platform.OS === 'web' && { height: 56 }),
+          backgroundColor: activeTheme === 'dark'
+            ? colors.dark.backgroundColor
+            : colors.light.backgroundColor,
         },
-        tabBarActiveTintColor: '#171717',
+        tabBarActiveTintColor: activeTheme === 'dark'
+          ? colors.light.backgroundColor
+          : colors.dark.backgroundColor,
+        sceneStyle: {
+          backgroundColor: activeTheme === 'dark'
+            ? colors.darkContent.backgroundColor
+            : colors.lightContent.backgroundColor,
+        },
+        headerStyle: {
+          backgroundColor: activeTheme === 'dark'
+            ? colors.dark.backgroundColor
+            : colors.light.backgroundColor,
+        },
       }}
     >
       <Tabs.Screen
@@ -54,6 +60,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <Feather name='home' size={size} color={color} />
           ),
+          headerShadowVisible: false,
         }}
       />
       <Tabs.Screen
@@ -61,8 +68,18 @@ export default function TabsLayout() {
         options={{
           tabBarLabel: 'Notifications',
           headerTitle: () => <Heading>Notifications</Heading>,
+          headerRight: () => {
+            return (
+              <Button onPress={handleClearAll} variant="outline" size="xs" action="secondary" className="mr-4">
+                <ButtonText className='text-typography-900'>Clear All</ButtonText>
+              </Button>
+            );
+          },
           tabBarIcon: ({ color, size }) => (
-            <Feather name='bell' size={size} color={color} />
+            <View>
+              <Feather name="bell" size={size} color={color} />
+              <AnimatedBadge count={unreadCount} />
+            </View>
           ),
         }}
       />

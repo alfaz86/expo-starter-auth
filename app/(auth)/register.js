@@ -20,12 +20,15 @@ import { Feather } from "@expo/vector-icons";
 import { Link, LinkText } from "@/components/ui/link";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { colors } from "@/theme/colors";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 
 export default function Register() {
   const dispatch = useDispatch();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { height } = Dimensions.get("window");
+  const activeTheme = useActiveTheme();
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -52,121 +55,129 @@ export default function Register() {
         flex: 1,
         justifyContent: "flex-start",
         marginBottom: insets.bottom ? -insets.bottom : 0,
-        padding: 20,
+        padding: 10,
         paddingTop: height * 0.25,
-        backgroundColor: "#fff",
+        backgroundColor: activeTheme === 'dark'
+          ? colors.darkContent.backgroundColor
+          : colors.lightContent.backgroundColor,
       }}
     >
-      <Heading size="2xl" style={{ alignSelf: "center" }}>Register</Heading>
+      <View style={{
+        padding: 20,
+        backgroundColor: activeTheme === 'dark'
+          ? colors.dark.backgroundColor
+          : colors.light.backgroundColor,
+      }}>
+        <Heading size="2xl" style={{ alignSelf: "center", marginBottom: 20 }}>Register</Heading>
+        <Formik
+          initialValues={{
+            name: "Admin",
+            email: "admin@example.com",
+            password: "password",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={handleRegister}
+        >
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            isSubmitting,
+          }) => (
+            <>
+              {/* Name */}
+              <FormControl isInvalid={touched.name && !!errors.name} className="mb-3">
+                <FormControlLabel>
+                  <FormControlLabelText>Name</FormControlLabelText>
+                </FormControlLabel>
+                <Input>
+                  <InputField
+                    value={values.name}
+                    onChangeText={handleChange("name")}
+                    onBlur={handleBlur("name")}
+                    placeholder="Masukkan nama"
+                  />
+                </Input>
+                {touched.name && errors.name && (
+                  <FormControlError>
+                    <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
+                    <FormControlErrorText className="text-red-500">
+                      {errors.name}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
 
-      <Formik
-        initialValues={{
-          name: "Admin",
-          email: "admin@example.com",
-          password: "password",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={handleRegister}
-      >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          isSubmitting,
-        }) => (
-          <>
-            {/* Name */}
-            <FormControl isInvalid={touched.name && !!errors.name} className="mb-3">
-              <FormControlLabel>
-                <FormControlLabelText>Name</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  value={values.name}
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  placeholder="Masukkan nama"
-                />
-              </Input>
-              {touched.name && errors.name && (
-                <FormControlError>
-                  <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
-                  <FormControlErrorText className="text-red-500">
-                    {errors.name}
-                  </FormControlErrorText>
-                </FormControlError>
-              )}
-            </FormControl>
+              {/* Email */}
+              <FormControl isInvalid={touched.email && !!errors.email} className="mb-3">
+                <FormControlLabel>
+                  <FormControlLabelText>Email</FormControlLabelText>
+                </FormControlLabel>
+                <Input>
+                  <InputField
+                    value={values.email}
+                    onChangeText={handleChange("email")}
+                    onBlur={handleBlur("email")}
+                    placeholder="Masukkan email"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                  />
+                </Input>
+                {touched.email && errors.email && (
+                  <FormControlError>
+                    <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
+                    <FormControlErrorText className="text-red-500">
+                      {errors.email}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
 
-            {/* Email */}
-            <FormControl isInvalid={touched.email && !!errors.email} className="mb-3">
-              <FormControlLabel>
-                <FormControlLabelText>Email</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  value={values.email}
-                  onChangeText={handleChange("email")}
-                  onBlur={handleBlur("email")}
-                  placeholder="Masukkan email"
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                />
-              </Input>
-              {touched.email && errors.email && (
-                <FormControlError>
-                  <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
-                  <FormControlErrorText className="text-red-500">
-                    {errors.email}
-                  </FormControlErrorText>
-                </FormControlError>
-              )}
-            </FormControl>
+              {/* Password */}
+              <FormControl isInvalid={touched.password && !!errors.password} className="mb-3">
+                <FormControlLabel>
+                  <FormControlLabelText>Password</FormControlLabelText>
+                </FormControlLabel>
+                <Input>
+                  <InputField
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    placeholder="Masukkan password"
+                    secureTextEntry
+                  />
+                </Input>
+                {touched.password && errors.password && (
+                  <FormControlError>
+                    <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
+                    <FormControlErrorText className="text-red-500">
+                      {errors.password}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
 
-            {/* Password */}
-            <FormControl isInvalid={touched.password && !!errors.password} className="mb-3">
-              <FormControlLabel>
-                <FormControlLabelText>Password</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  value={values.password}
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  placeholder="Masukkan password"
-                  secureTextEntry
-                />
-              </Input>
-              {touched.password && errors.password && (
-                <FormControlError>
-                  <Feather name="alert-circle" size={16} color="red" style={{ marginRight: 4 }} />
-                  <FormControlErrorText className="text-red-500">
-                    {errors.password}
-                  </FormControlErrorText>
-                </FormControlError>
-              )}
-            </FormControl>
+              {/* Button */}
+              <Button className="mt-3" onPress={handleSubmit} isDisabled={isSubmitting}>
+                <ButtonText>
+                  {isSubmitting ? "Registering..." : "Register"}
+                </ButtonText>
+              </Button>
 
-            {/* Button */}
-            <Button className="mt-3" onPress={handleSubmit} isDisabled={isSubmitting}>
-              <ButtonText>
-                {isSubmitting ? "Registering..." : "Register"}
-              </ButtonText>
-            </Button>
-
-            {/* Link Login */}
-            <View style={{ marginTop: 20, alignItems: 'center' }}>
-              <Text>Already have an account?</Text>
-              <Link onPress={() => router.back()}>
-                <LinkText>Login</LinkText>
-              </Link>
-            </View>
-          </>
-        )}
-      </Formik>
+              {/* Link Login */}
+              <View style={{ marginTop: 20, alignItems: 'center' }}>
+                <Text>Already have an account?</Text>
+                <Link onPress={() => router.back()}>
+                  <LinkText>Login</LinkText>
+                </Link>
+              </View>
+            </>
+          )}
+        </Formik>
+      </View>
     </View>
   );
 }

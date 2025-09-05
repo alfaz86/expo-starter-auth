@@ -5,11 +5,14 @@ import { logout } from '@/store/authSlice';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
+import { useActiveTheme } from '@/hooks/useActiveTheme';
+import { colors } from '@/theme/colors';
 
 export default function ProfileScreen() {
   const { role, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const activeTheme = useActiveTheme();
 
   const handleLogout = () => {
     setIsSubmitting(true);
@@ -20,7 +23,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
+      <View style={[styles.card, colors[activeTheme]]}>
         <Heading style={styles.title}>Profile</Heading>
         <View style={styles.infoBox}>
           <Text>Name: {user?.name}</Text>
@@ -39,11 +42,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
-    paddingBottom: 100,
+    paddingBottom: 10,
   },
   card: {
     padding: 20,
-    backgroundColor: '#fff',
+    borderWidth: 0.2,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
   },
   title: {
     fontSize: 24,

@@ -11,18 +11,29 @@ import {
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authReducer from './authSlice';
+import notificationsReducer from './notificationsSlice';
+import { combineReducers } from "redux";
+import themeReducer from "./themeSlice";
+import modalReducer from "./modalSlice";
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  theme: themeReducer,
+  notifications: notificationsReducer,
+  modal: modalReducer,
+});
 
 const persistConfig = {
-  key: 'auth',
+  key: "root",
   storage: AsyncStorage,
+  whitelist: ["auth", "theme", "notifications"],
+  blacklist: ["modal"],
 };
 
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    auth: persistedAuthReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
