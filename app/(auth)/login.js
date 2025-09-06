@@ -38,7 +38,7 @@ export default function Login() {
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
       await dispatch(login(values)).unwrap();
-      router.push("/home");
+      safePush("/home");
     } catch (err) {
       console.log(err);
       setErrors({ email: "Invalid email or password" });

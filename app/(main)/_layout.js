@@ -9,6 +9,7 @@ export default function MainLayout() {
 
   return (
     <Stack
+      initialRouteName="(tabs)"
       screenOptions={{
         animation: Platform.select({
           ios: "ios_from_right",
