@@ -24,7 +24,7 @@ Git
 ### 1. Clone repo ini
 
 ```shell
-git clone https://github.com/username/expo-starter-auth.git
+git clone https://github.com/alfaz86/expo-starter-auth.git
 cd expo-starter-auth
 ```
 
@@ -97,4 +97,4 @@ theme/            # Theme config
 - Kalau kamu fork repo ini, jalankan `eas build:configure` supaya punya `projectId` sendiri.
 
 ## License
-See [LICENSE](https://github.com/alfaz86/expo-starter-auth?tab=MIT-1-ov-file) for more information.
+See [LICENSE](https://github.com/alfaz86/expo-starter-auth/blob/main/LICENSE) for more information.
