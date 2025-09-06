@@ -1,7 +1,7 @@
 import { Link, LinkText } from "@/components/ui/link";
 import { Text } from "@/components/ui/text";
 import { useNavigation } from "@react-navigation/native";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -28,6 +28,8 @@ export default function NotFoundScreen() {
       }}
     >
       <Text>This screen doesn't exist.</Text>
+      <Text>Requested path: {usePathname()}</Text>
+
       <Link onPress={handleBack}>
         <LinkText>Go back!</LinkText>
       </Link>

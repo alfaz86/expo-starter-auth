@@ -27,7 +27,6 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      initialRouteName='home'
       screenOptions={{
         lazy: true,
         tabBarStyle: {
