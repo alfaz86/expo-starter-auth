@@ -70,9 +70,12 @@ eas build:configure
 
 Perintah di atas akan:
 
-Membuat `projectId` baru di akun Expo kamu.
-<br>
-Mengupdate `app.json` dengan ID tersebut.
+- Membuat `projectId` baru di akun Expo kamu.
+- Mengupdate `app.json` dengan ID tersebut.
+
+> ⚠️ **Catatan penting:**  
+> `bundleIdentifier` (iOS) dan `package` (Android) **tidak akan otomatis diganti**.  
+> Pastikan kamu mengganti nilai default (`com.example.app`) dengan **identifier unik milikmu** sebelum build untuk mencegah konflik di App Store / Play Store.
 
 Lalu kamu bisa build:
 

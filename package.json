@@ -7,7 +7,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:web": "expo export --platform web"
   },
   "dependencies": {
     "@expo/html-elements": "^0.10.1",
@@ -29,13 +30,12 @@
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.11",
     "formik": "^2.4.6",
-    "lucide-react-native": "^0.510.0",
     "nativewind": "^4.1.23",
     "react": "19.0.0",
     "react-aria": "^3.33.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-progress": "^5.0.1",
+    "react-native-edge-to-edge": "1.6.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
@@ -54,6 +54,5 @@
     "@types/react": "~19.0.10",
     "typescript": "~5.8.3"
   },
-  "private": true,
-  "packageManager": "yarn@4.9.2+sha512.1fc009bc09d13cfd0e19efa44cbfc2b9cf6ca61482725eb35bbc5e257e093ebf4130db6dfe15d604ff4b79efd8e1e8e99b25fa7d0a6197c9f9826358d4d65c3c"
+  "private": true
 }

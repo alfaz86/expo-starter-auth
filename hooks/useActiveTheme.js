@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { Appearance } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTheme } from "@/store/themeSlice";
 
 export function useActiveTheme() {
   const { mode, activeTheme } = useSelector((state) => state.theme);
-  const systemTheme = useColorScheme();
+  const systemTheme = Appearance.getColorScheme();
   const dispatch = useDispatch();
 
   useEffect(() => {
