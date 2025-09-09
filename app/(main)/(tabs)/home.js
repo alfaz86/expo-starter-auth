@@ -12,7 +12,7 @@ export default function HomeScreen() {
 
   return (
     <>
-      {role === 'admin' || role === 2 ? (
+      {role === 'admin' ? (
         <Dashboard />
       ) : (
         <ScrollView>

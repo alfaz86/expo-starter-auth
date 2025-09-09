@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, FlatList, Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNotification, markAsRead } from '@/store/notificationsSlice';
+import { markAsRead } from '@/store/notificationsSlice';
 import {
   Alert,
   AlertText,
@@ -10,7 +10,6 @@ import { Text } from '@/components/ui/text';
 import { Ionicons } from '@expo/vector-icons';
 import { useActiveTheme } from '@/hooks/useActiveTheme';
 import { colors } from '@/theme/colors';
-import { useSocket } from '@/hooks/useSocket';
 import { clearNotifications } from "@/store/notificationsSlice";
 import ModalClearAll from "@/components/tabs/ModalClearAll";
 import { closeClearAllModal } from '@/store/modalSlice';
@@ -18,34 +17,11 @@ import { useSafeNavigation } from '@/hooks/useSafeNavigation';
 
 export default function NotificationsScreen() {
   const dispatch = useDispatch();
-  const notifications = useSelector(state => state.notifications.list);
+  const notifications = useSelector((state) => state.notifications.list);
   const activeTheme = useActiveTheme();
   const themeColors = colors[activeTheme];
-  const socket = useSocket();
   const { safePush } = useSafeNavigation();
   const isClearAllOpen = useSelector((state) => state.modal.isClearAllOpen);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('connect', () => {
-      console.log('Connected to Socket.IO server');
-    });
-
-    socket.on('newNotification', (data) => {
-      if (data.type === "global") {
-        console.log("Global notif:", data);
-      } else {
-        console.log("Personal notif:", data);
-      }
-      dispatch(addNotification(data));
-    });
-
-    return () => {
-      socket.off('connect');
-      socket.off('newNotification');
-    };
-  }, [dispatch, socket]);
 
   const handleOpenDetail = (id) => {
     dispatch(markAsRead(id));
@@ -79,32 +55,38 @@ export default function NotificationsScreen() {
               onPress={() => handleOpenDetail(item.id)}
               style={{
                 flex: 1,
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
+                flexDirection: "row",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
                 gap: 8,
               }}
             >
-              {/* Icon */}
-              <Ionicons name="notifications" size={16} color={
-                item.read ? themeColors.borderColor : '#0da6f2'
-              } style={{ marginTop: 2 }} />
+              <Ionicons
+                name="notifications"
+                size={16}
+                color={item.read ? themeColors.borderColor : "#0da6f2"}
+                style={{ marginTop: 2 }}
+              />
 
-              {/* Title + Message */}
-              <View style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
+              <View style={{ flex: 1, flexDirection: "column", gap: 4 }}>
                 <AlertText className="font-bold text-typography-900">
                   {item.title}
                 </AlertText>
-                <AlertText className="font-semibold text-typography-500"
+                <AlertText
+                  className="font-semibold text-typography-500"
                   size="xs"
                   numberOfLines={2}
-                  ellipsizeMode="tail">
+                  ellipsizeMode="tail"
+                >
                   {item.message}
                 </AlertText>
               </View>
 
-              {/* Waktu */}
-              <AlertText className="font-semibold text-typography-500" size="xs" style={{ marginTop: 2, maxWidth: 80, textAlign: 'right' }}>
+              <AlertText
+                className="font-semibold text-typography-500"
+                size="xs"
+                style={{ marginTop: 2, maxWidth: 80, textAlign: "right" }}
+              >
                 {new Date(item.createdAt).toLocaleString("id-ID", {
                   day: "2-digit",
                   month: "short",

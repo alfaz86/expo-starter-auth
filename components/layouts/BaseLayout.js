@@ -6,8 +6,10 @@ import RouteWithLoadingLayout from "./RouteWithLoadingLayout";
 import { useEffect } from "react";
 import * as NavigationBar from 'expo-navigation-bar';
 import * as StatusBar from 'expo-status-bar';
+import { useSocket } from "@/hooks/useSocket";
 
 function BaseLayout() {
+  useSocket();
   const theme = useActiveTheme();
 
   useEffect(() => {

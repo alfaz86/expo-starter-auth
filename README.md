@@ -1,11 +1,12 @@
 # Expo Starter Auth 🚀
 
-Starter kit untuk membuat aplikasi React Native + Expo Router + Redux Toolkit + Auth dengan cepat.
+Starter kit berbasis **JavaScript** untuk membuat aplikasi React Native + Expo Router + Redux Toolkit + Auth dengan cepat.
 Sudah termasuk:
 
-- 🔐 Auth state management (Redux + redux-persist + AsyncStorage)
+- 📜 JavaScript First, TypeScript Friendly
 - 🗂️ Expo Router (folder based navigation)
-- 🎨 Tailwind + NativeWind styling
+- 🔐 Auth state management (Redux + redux-persist + AsyncStorage)
+- 🎨 Tailwind + NativeWind styling + Gluestack-ui
 - 🌗 Dark/Light theme switcher
 - 🧪 Contoh struktur modular (store, hooks, utils, components)
 
@@ -16,8 +17,7 @@ Pastikan sudah terinstall:
 - Node.js (LTS disarankan)
 - Expo CLI
 - Git
-
-Git
+- iOS/Android Simulator atau physical device dengan Expo Go
 
 ## 🚀 Cara Install
 

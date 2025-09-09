@@ -58,7 +58,8 @@ export default function Dashboard() {
   return (
     <View style={{ flex: 1 }}>
       <View style={{
-        marginTop: -10, backgroundColor: activeTheme === 'dark'
+        marginTop: -10,
+        backgroundColor: activeTheme === 'dark'
           ? colors.dark.backgroundColor
           : colors.light.backgroundColor,
       }}>
@@ -83,6 +84,10 @@ export default function Dashboard() {
         maxHeight: 50, minHeight: 50, backgroundColor: activeTheme === 'dark'
           ? colors.dark.backgroundColor
           : colors.light.backgroundColor,
+        borderBottomColor: activeTheme === 'dark'
+          ? colors.dark.borderColor
+          : colors.light.borderColor,
+        borderBottomWidth: 0.2,
       }}>
         {/* Tags */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingVertical: 10, paddingHorizontal: 5 }}>

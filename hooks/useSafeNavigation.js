@@ -6,7 +6,7 @@ export function useSafeNavigation(timeout = 500) {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const safePush = useCallback(
-    (path: string) => {
+    (path) => {
       if (isNavigating) return;
       setIsNavigating(true);
       router.push(path);
@@ -16,7 +16,7 @@ export function useSafeNavigation(timeout = 500) {
   );
 
   const safeReplace = useCallback(
-    (path: string) => {
+    (path) => {
       if (isNavigating) return;
       setIsNavigating(true);
       router.replace(path);
